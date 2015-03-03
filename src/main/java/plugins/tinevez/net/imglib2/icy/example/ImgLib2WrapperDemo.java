@@ -47,7 +47,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import plugins.kernel.roi.roi2d.ROI2DEllipse;
 import plugins.kernel.roi.roi2d.ROI2DPath;
-import plugins.tinevez.util.ImgLib2Utils;
 
 public class ImgLib2WrapperDemo extends PluginActionable
 {
@@ -55,7 +54,6 @@ public class ImgLib2WrapperDemo extends PluginActionable
 	@Override
 	public void run()
 	{
-
 		ThreadUtil.bgRun( new Runnable()
 		{
 			@Override

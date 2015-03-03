@@ -1,4 +1,4 @@
-package plugins.tinevez.util;
+package plugins.tinevez.net.imglib2.icy.example;
 
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
@@ -8,7 +8,6 @@ import net.imglib2.img.ImgFactory;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
-
 
 public class ImgLib2Utils
 {
