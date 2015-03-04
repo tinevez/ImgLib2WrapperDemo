@@ -13,8 +13,11 @@ import javax.swing.SwingUtilities;
 
 import net.imglib2.img.Img;
 import net.imglib2.img.display.icy.VirtualSequence;
+import net.imglib2.img.display.icy.VirtualSequence.DimensionArrangement;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.util.Util;
+import net.imglib2.view.IntervalView;
+import net.imglib2.view.Views;
 
 public class VirtualSequenceDemo
 {
@@ -38,16 +41,29 @@ public class VirtualSequenceDemo
 		final Img img = ImageJFunctions.wrap( imp );
 		System.out.println( "Loaded " + img + " - " + Util.printInterval( img ) );
 		
-		// Wrap the wrapped image in an Icy sequence, and display it in Icy.
-		final VirtualSequence sequence = new VirtualSequence( img );
+		// Reslice through its Z center.
+		final IntervalView slice = Views.hyperSlice( img, 2, 21 );
+		final DimensionArrangement arrangement = DimensionArrangement.XYT;
+
+		// Reslice at a given time.
+		final IntervalView slice2 = Views.hyperSlice( img, 3, 49 );
+		final DimensionArrangement arrangement2 = DimensionArrangement.XYZ;
+
+		// Wrap the wrapped images in Icy sequences, and display them in Icy.
+		final VirtualSequence sequence = new VirtualSequence( slice, arrangement );
+		final VirtualSequence sequence2 = new VirtualSequence( slice2, arrangement2 );
+
 		SwingUtilities.invokeAndWait( new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				System.out.print( "Displaying in Icy... " );
+				System.out.print( "Displaying first sequence in Icy... " );
 				final Viewer viewer = new Viewer( sequence );
-				Icy.getMainInterface().setActiveViewer( viewer );
+				System.out.println( "Done.\n" );
+
+				System.out.print( "Displaying Second sequence in Icy... " );
+				final Viewer viewer2 = new Viewer( sequence2 );
 				System.out.println( "Done.\n" );
 			}
 		} );
