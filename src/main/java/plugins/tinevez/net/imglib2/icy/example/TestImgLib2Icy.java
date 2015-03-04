@@ -1,63 +1,62 @@
 package plugins.tinevez.net.imglib2.icy.example;
 
+import icy.common.exception.UnsupportedFormatException;
+import icy.file.Loader;
 import icy.gui.dialog.MessageDialog;
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.main.Icy;
 import icy.plugin.abstract_.PluginActionable;
-import icy.type.DataType;
-import net.imglib2.algorithm.pde.PeronaMalikAnisotropicDiffusion;
-import net.imglib2.img.basictypeaccess.array.FloatArray;
-import net.imglib2.img.planar.PlanarImg;
-import net.imglib2.img.planar.PlanarImgs;
-import net.imglib2.type.numeric.real.FloatType;
+import icy.sequence.Sequence;
 
-public class TestImgLib2Icy extends PluginActionable
+import java.io.File;
+import java.io.IOException;
+
+import net.imglib2.algorithm.pde.PeronaMalikAnisotropicDiffusion;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.icy.IcyFunctions;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+
+public class TestImgLib2Icy< T extends RealType< T > & NativeType< T >> extends PluginActionable
 {
 
 	@Override
 	public void run()
 	{
-
 		final IcyBufferedImage image = getActiveImage();
+		final Img< T > img = IcyFunctions.wrap( image );
 
-		final long[] dims = new long[] { image.getWidth(), image.getHeight() };
-
-		final DataType dataType = image.getDataType_();
-
-		final float[] arr = image.getDataXYAsFloat( 0 );
-
-//			img = ArrayImgs.floats( arr, dims );
-		final PlanarImg< FloatType, FloatArray > img = PlanarImgs.floats( dims );
-		img.setPlane( 0, new FloatArray( arr ) );
-
-		final PeronaMalikAnisotropicDiffusion algo = new PeronaMalikAnisotropicDiffusion( img, 0.15, 0.5 );
-
+		final PeronaMalikAnisotropicDiffusion< T > algo = new PeronaMalikAnisotropicDiffusion< T >( img, 0.15, 15 );
 		algo.setNumThreads();
-
 		if ( !algo.checkInput() )
-
 		{
-
 			System.out.println( "Check input failed! With: " + algo.getErrorMessage() );
 			return;
-
 		}
 
 		final int niter = 20;
-
 		for ( int i = 0; i < niter; i++ )
-
 		{
-
 			System.out.println( "Iteration " + ( i + 1 ) + " of " + niter + "." );
-
 			algo.process();
-
 			image.dataChanged();
-
 		}
 
 		System.out.println( "Done in " + algo.getProcessingTime() + " ms." );
 		MessageDialog.showDialog( "TestImgLib2Icy is working fine !" );
+	}
+
+	public static < T extends RealType< T > & NativeType< T >> void main( final String[] args ) throws UnsupportedFormatException, IOException
+	{
+		// Launch Icy.
+		Icy.main( args );
+
+		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/clown.tif" );
+		final IcyBufferedImage image = Loader.loadImage( file.getAbsolutePath() );
+		Icy.getMainInterface().setActiveViewer( new Viewer( new Sequence( image ) ) );
+
+		new TestImgLib2Icy< T >().run();
 
 	}
 

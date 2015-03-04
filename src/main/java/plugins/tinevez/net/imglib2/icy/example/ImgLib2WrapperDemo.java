@@ -38,7 +38,6 @@ import net.imglib2.algorithm.dog.DogDetection.ExtremaType;
 import net.imglib2.algorithm.localextrema.RefinedPeak;
 import net.imglib2.img.IcySequenceAdapter;
 import net.imglib2.img.Img;
-import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
@@ -56,12 +55,14 @@ public class ImgLib2WrapperDemo extends PluginActionable
 	{
 		ThreadUtil.bgRun( new Runnable()
 		{
+			@SuppressWarnings( "unchecked" )
 			@Override
 			public void run()
 			{
 				final Sequence sequence = getActiveSequence();
 
-				final Img< ? extends RealType< ? >> img = IcySequenceAdapter.wrap( sequence );
+				@SuppressWarnings( "rawtypes" )
+				final Img img = IcySequenceAdapter.wrap( sequence );
 				final double[] calibration = IcySequenceAdapter.getCalibration( sequence );
 
 				System.out.println( "Received a " + Util.printInterval( img ) + " sequence, with calibration = "
@@ -103,7 +104,6 @@ public class ImgLib2WrapperDemo extends PluginActionable
 					{
 						slice = img;
 					}
-					@SuppressWarnings( "unchecked" )
 					final Img< FloatType > target = ImgLib2Utils.copyToFloat( slice );
 
 					final DogDetection< FloatType > dog = new DogDetection< FloatType >( Views.extendMirrorSingle( target ), target, calibration, sigma1, sigma2, ExtremaType.MAXIMA, minPeakValue, false );
