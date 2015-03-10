@@ -37,5 +37,10 @@
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2-algorithm-gpl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-icy</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
