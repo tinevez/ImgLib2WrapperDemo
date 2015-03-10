@@ -11,10 +11,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
 
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.icy.VirtualSequence;
 import net.imglib2.img.display.icy.VirtualSequence.DimensionArrangement;
-import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.util.Util;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
@@ -24,8 +25,9 @@ public class VirtualSequenceDemo
 
 	public static void main( final String[] args ) throws InterruptedException, InvocationTargetException, ImgIOException
 	{
-		exampleColor( args );
-//		example4D( args );
+//		exampleColor( args );
+		example4D( args );
+//		exampleComposite( args );
 //		example5D( args );
 	}
 
@@ -35,7 +37,7 @@ public class VirtualSequenceDemo
 		ImageJ.main( args );
 
 		// Launch Icy.
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/clown.tif" );
 
@@ -46,7 +48,7 @@ public class VirtualSequenceDemo
 
 		// Wrap it in an ImgLib2 container.
 		@SuppressWarnings( "rawtypes" )
-		final Img img = ImageJFunctions.wrap( imp );
+		final Img img = rawWraps( imp );
 		final DimensionArrangement arrangement = DimensionArrangement.XY;
 		System.out.println( "Loaded " + img + " - " + Util.printInterval( img ) );
 
@@ -71,7 +73,7 @@ public class VirtualSequenceDemo
 		ImageJ.main( args );
 
 		// Launch Icy.
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/mitosis.tif" );
 
@@ -82,7 +84,7 @@ public class VirtualSequenceDemo
 
 		// Wrap it in an ImgLib2 container.
 		@SuppressWarnings( "rawtypes" )
-		final Img img = ImageJFunctions.wrap( imp );
+		final Img img = rawWraps( imp );
 		final DimensionArrangement arrangement = DimensionArrangement.XYCZT;
 		System.out.println( "Loaded " + img + " - " + Util.printInterval( img ) );
 
@@ -107,7 +109,7 @@ public class VirtualSequenceDemo
 		ImageJ.main( args );
 
 		// Launch Icy.
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/flybrain-composite.tif" );
 
@@ -118,7 +120,7 @@ public class VirtualSequenceDemo
 
 		// Wrap it in an ImgLib2 container.
 		@SuppressWarnings( "rawtypes" )
-		final Img img = ImageJFunctions.wrap( imp );
+		final Img img = rawWraps( imp );
 		final DimensionArrangement arrangement = DimensionArrangement.XYCZ;
 		System.out.println( "Loaded " + img + " - " + Util.printInterval( img ) );
 
@@ -144,7 +146,7 @@ public class VirtualSequenceDemo
 		ImageJ.main( args );
 
 		// Launch Icy.
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/Celegans-5pc.tif" );
 		
@@ -154,7 +156,7 @@ public class VirtualSequenceDemo
 		imp.show();
 
 		// Wrap it in an ImgLib2 container.
-		final Img img = ImageJFunctions.wrap( imp );
+		final Img img = rawWraps( imp );
 		System.out.println( "Loaded " + img + " - " + Util.printInterval( img ) );
 		
 		// Reslice through its Z center.
@@ -183,5 +185,13 @@ public class VirtualSequenceDemo
 				System.out.println( "Done.\n" );
 			}
 		} );
+	}
+
+	@SuppressWarnings( "rawtypes" )
+	private static final Img rawWraps( final ImagePlus imp )
+	{
+		final Img< DoubleType > img = ImagePlusAdapter.wrap( imp );
+		final Img raw = img;
+		return raw;
 	}
 }

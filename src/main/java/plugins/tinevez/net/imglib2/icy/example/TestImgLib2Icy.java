@@ -12,6 +12,8 @@ import icy.sequence.Sequence;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.SwingUtilities;
+
 import net.imglib2.algorithm.pde.PeronaMalikAnisotropicDiffusion;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.icy.IcyFunctions;
@@ -50,13 +52,27 @@ public class TestImgLib2Icy< T extends RealType< T > & NativeType< T >> extends 
 	public static < T extends RealType< T > & NativeType< T >> void main( final String[] args ) throws UnsupportedFormatException, IOException
 	{
 		// Launch Icy.
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "/Users/tinevez/Desktop/iconas/Data/clown.tif" );
-		final IcyBufferedImage image = Loader.loadImage( file.getAbsolutePath() );
-		Icy.getMainInterface().setActiveViewer( new Viewer( new Sequence( image ) ) );
-
-		new TestImgLib2Icy< T >().run();
+		final IcyBufferedImage colorImage = Loader.loadImage( file.getAbsolutePath() );
+		final IcyBufferedImage image = colorImage.getImage( 0 );
+		SwingUtilities.invokeLater( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				Icy.getMainInterface().setActiveViewer( new Viewer( new Sequence( image ) ) );
+				new Thread( "TestImgLib2" )
+				{
+					@Override
+					public void run()
+					{
+						new TestImgLib2Icy< T >().run();
+					}
+				}.start();
+			}
+		} );
 
 	}
 

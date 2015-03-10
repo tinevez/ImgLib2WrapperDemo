@@ -38,6 +38,7 @@ import net.imglib2.algorithm.dog.DogDetection.ExtremaType;
 import net.imglib2.algorithm.localextrema.RefinedPeak;
 import net.imglib2.img.IcySequenceAdapter;
 import net.imglib2.img.Img;
+import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
@@ -61,8 +62,7 @@ public class ImgLib2WrapperDemo extends PluginActionable
 			{
 				final Sequence sequence = getActiveSequence();
 
-				@SuppressWarnings( "rawtypes" )
-				final Img img = IcySequenceAdapter.wrap( sequence );
+				final Img img = rawWrap( sequence );
 				final double[] calibration = IcySequenceAdapter.getCalibration( sequence );
 
 				System.out.println( "Received a " + Util.printInterval( img ) + " sequence, with calibration = "
@@ -241,13 +241,20 @@ public class ImgLib2WrapperDemo extends PluginActionable
 		} );
 	}
 
+	public static final Img rawWrap( final Sequence sequence )
+	{
+		final Img< DoubleType > img = IcySequenceAdapter.wrap( sequence );
+		final Img raw = img;
+		return raw;
+	}
+
 	/*
 	 * MAIN METHOD
 	 */
 
 	public static void main( final String[] args ) throws UnsupportedFormatException, IOException, InterruptedException, InvocationTargetException
 	{
-		Icy.main( args );
+		Icy.main( new String[] { "--nosplash" } );
 
 		final File file = new File( "../TrackMate/samples/FakeTracks.tif" );
 
